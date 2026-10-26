@@ -19,6 +19,13 @@ const KEYWORDS = [
 
 const IPV4_REGEX = /^\d{1,3}(\.\d{1,3}){3}$/;
 
+// Free, anonymous tunnel services often used to host throwaway attack pages
+const TUNNEL_HOSTS = [
+  "trycloudflare.com", "ngrok.io", "ngrok-free.app", "ngrok-free.dev",
+  "ngrok.app", "ngrok.dev", "serveo.net", "loca.lt", "localtunnel.me",
+  "lhr.life", "localhost.run", "pinggy.link", "pagekite.me",
+];
+
 // ---------- Helpers ----------
 
 function parseUrl(input) {
@@ -184,6 +191,18 @@ export function analyzeUrl(input, extraBrands = []) {
         break;
       }
     }
+  }
+
+    // Temporary tunnel hosting
+  const tunnel = TUNNEL_HOSTS.find(
+    (t) => hostname === t || hostname.endsWith("." + t)
+  );
+  if (!isIp && tunnel) {
+    add(
+      "tunnel-host",
+      `Hosted on a temporary tunnel service (${tunnel}), rarely used by real businesses`,
+      35
+    );
   }
 
   const score = Math.min(100, findings.reduce((sum, f) => sum + f.points, 0));

@@ -278,6 +278,42 @@
     return findings;
   }
 
+    function scanSensors() {
+    const findings = [];
+    let events = [];
+    try {
+      events = JSON.parse(
+        document.documentElement.getAttribute("data-nsr-sensors") || "[]"
+      );
+    } catch {}
+
+    // "Automatic" = the page asked without any click or key press
+    const auto = (kind) => events.some((e) => e.kind === kind && !e.activated);
+
+    if (auto("camera")) {
+      findings.push({
+        id: "sensor-camera-auto",
+        message: "Page asked for your camera as soon as it loaded, without any click",
+        points: 40,
+      });
+    }
+    if (auto("microphone")) {
+      findings.push({
+        id: "sensor-mic-auto",
+        message: "Page asked for your microphone as soon as it loaded, without any click",
+        points: 25,
+      });
+    }
+    if (auto("location")) {
+      findings.push({
+        id: "sensor-location-auto",
+        message: "Page asked for your location as soon as it loaded, without any click",
+        points: 15,
+      });
+    }
+    return findings;
+  }
+
   // ---------- Run everything ----------
 
   function runScan() {
@@ -288,6 +324,8 @@
       ...scanLanguage(),
       ...scanBrandMismatch(formResult.hasPasswordField),
       ...scanObfuscation(),
+      ...scanObfuscation(),
+      ...scanSensors(),
     ];
 
     return {
@@ -428,6 +466,13 @@
     }
   });
 
+    // The page just used the camera, microphone or location: rescan quickly
+  let sensorTimer = null;
+  window.addEventListener("nsr-sensor", () => {
+    clearTimeout(sensorTimer);
+    sensorTimer = setTimeout(reportScan, 300);
+  });
+  
   // First scan right away
   reportScan();
 

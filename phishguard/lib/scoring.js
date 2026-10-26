@@ -16,6 +16,9 @@ const PAGE_IDS = [
   "urgent-language",
   "title-brand-mismatch",
   "obfuscated-script",
+  "sensor-camera-auto",
+  "sensor-mic-auto",
+  "sensor-location-auto",
 ];
 
 const IMPERSONATION_IDS = [
