@@ -4,8 +4,8 @@
 
 NSR is a browser extension that analyzes web pages as they load and warns you before you fall for a phishing attempt. It checks the address, the page content and the redirect path, then gives each page a **risk score from 0 to 100**. Everything runs locally in your browser: no accounts, no servers, and no URLs or page data ever leave your device.
 
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
 ![Chrome](https://img.shields.io/badge/Chrome-supported-green)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
 ![Brave and Edge](https://img.shields.io/badge/Brave%20%7C%20Edge-supported-green)
 ![Firefox](https://img.shields.io/badge/Firefox-experimental-orange)
 ![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red)
