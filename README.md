@@ -235,7 +235,7 @@ For the camera check, use a harmless local page that only asks for permission an
 
 ## License and usage rules
 
-**Copyright © 2026 [Your Name]. All rights reserved.**
+**Copyright © 2026 NSR.GaganMD. All rights reserved.**
 
 This repository is published so that people can **view and learn from** the code. The following rules apply:
 
@@ -245,7 +245,7 @@ This repository is published so that people can **view and learn from** the code
 4. **Attribution.** Any permitted use must credit the original author and link to this repository.
 5. **No warranty.** The software is provided "as is", without warranty of any kind. The author is not liable for any damage or loss arising from its use.
 
-To request permission for any other use, contact: **[your-email@example.com]**
+To request permission for any other use, contact: **gaganmd218@gmail.com**
 
 ---
 
