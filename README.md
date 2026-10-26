@@ -71,7 +71,7 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 
 1. Download the code:
    ```bash
-   git clone (https://github.com/gaganmd76/NSR-AntiPhishing-Extension.git)
+   git clone https://github.com/gaganmd76/NSR-AntiPhishing-Extension.git
    ```
    Or click **Code, then Download ZIP** on GitHub and unzip it.
 2. Open the extensions page:
