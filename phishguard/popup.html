@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h3>NSR</h3>
+      <button id="settings-btn" class="link-btn">Settings</button>
+    </header>
+
+    <section id="current">
+      <div id="verdict" class="verdict">Analyzing...</div>
+      <div id="host" class="host"></div>
+      <div class="score-wrap">
+        <div id="score-bar" class="score-bar"></div>
+      </div>
+      <div id="score-text" class="score-text"></div>
+      <div id="breakdown" class="breakdown"></div>
+      <div id="scan-note" class="scan-note"></div>
+      <ul id="findings"></ul>
+      <div id="chain" class="chain"></div>
+    </section>
+
+    <hr />
+
+    <section id="tester">
+      <label for="test-input">Test any URL (nothing is visited)</label>
+      <div class="row">
+        <input id="test-input" type="text" placeholder="e.g. paypa1.com" />
+        <button id="test-btn">Check</button>
+      </div>
+      <div id="test-result"></div>
+    </section>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

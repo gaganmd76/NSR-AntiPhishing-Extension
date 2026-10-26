@@ -1,0 +1,25 @@
+// Commonly impersonated brands.
+// "name" is the brand keyword, "domains" are its real registrable domains.
+export const BRANDS = [
+  { name: "paypal", domains: ["paypal.com", "paypal.me"] },
+  { name: "google", domains: ["google.com", "gmail.com", "youtube.com", "google.co.in"] },
+  { name: "microsoft", domains: ["microsoft.com", "live.com", "outlook.com", "office.com", "microsoftonline.com"] },
+  { name: "apple", domains: ["apple.com", "icloud.com"] },
+  { name: "amazon", domains: ["amazon.com", "amazon.in", "amazon.co.uk", "amazonaws.com"] },
+  { name: "facebook", domains: ["facebook.com", "fb.com", "messenger.com"] },
+  { name: "instagram", domains: ["instagram.com"] },
+  { name: "whatsapp", domains: ["whatsapp.com", "whatsapp.net"] },
+  { name: "netflix", domains: ["netflix.com"] },
+  { name: "linkedin", domains: ["linkedin.com"] },
+  { name: "github", domains: ["github.com", "githubusercontent.com"] },
+  { name: "dropbox", domains: ["dropbox.com"] },
+  { name: "coinbase", domains: ["coinbase.com"] },
+  { name: "binance", domains: ["binance.com"] },
+  { name: "wellsfargo", domains: ["wellsfargo.com"] },
+  { name: "bankofamerica", domains: ["bankofamerica.com"] },
+  { name: "citibank", domains: ["citibank.com", "citi.com"] },
+  { name: "chase", domains: ["chase.com"] },
+  { name: "hdfcbank", domains: ["hdfcbank.com"] },
+  { name: "icicibank", domains: ["icicibank.com"] },
+  { name: "sbi", domains: ["sbi.co.in", "onlinesbi.com"] },
+];

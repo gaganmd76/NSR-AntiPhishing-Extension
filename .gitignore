@@ -1,0 +1,6 @@
+dist/
+.DS_Store
+node_modules/
+.vscode/
+*.zip
+/phishguard/NSR Project Report.docx

@@ -1,0 +1,136 @@
+.bar {
+  --banner-text: #fff7f7;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(254, 202, 202, 0.4);
+  background: rgba(185, 28, 28, 0.78);
+  color: var(--banner-text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  text-shadow: 0 1px 2px rgba(69, 10, 10, 0.6);
+  box-shadow: 0 5px 22px rgba(127, 29, 29, 0.42), 0 0 26px rgba(239, 68, 68, 0.18);
+  backdrop-filter: blur(14px) saturate(135%);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bar {
+    background: rgba(153, 27, 27, 0.97);
+  }
+}
+
+.main {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 16px;
+}
+
+.icon {
+  flex: 0 0 auto;
+  font-size: 26px;
+  filter: drop-shadow(0 0 8px rgba(254, 202, 202, 0.55));
+}
+
+.text {
+  min-width: 0;
+  flex: 1;
+  color: #fff7f7;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  box-sizing: border-box;
+  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.13);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-shadow: none;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 4px 13px rgba(69, 10, 10, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.btn:focus-visible,
+.close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.btn.primary {
+  border-color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 255, 255, 0.94);
+  color: #7f1d1d;
+  font-weight: 750;
+}
+
+.btn.primary:hover {
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(255, 255, 255, 0.2);
+}
+
+.btn.secondary {
+  background: rgba(69, 10, 10, 0.2);
+  color: #fff;
+}
+
+.btn.secondary:hover {
+  background: rgba(69, 10, 10, 0.34);
+}
+
+.close {
+  box-sizing: border-box;
+  padding: 0 5px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  text-shadow: none;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.close:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.details {
+  display: none;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 16px 12px 52px;
+  border-top: 1px solid rgba(254, 202, 202, 0.25);
+  background: rgba(69, 10, 10, 0.34);
+  color: #fff7f7;
+}
+
+.details.open {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .close {
+    transition-duration: 0.01ms;
+  }
+}

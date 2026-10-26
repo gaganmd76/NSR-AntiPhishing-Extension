@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>NSR Settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1>NSR Settings</h1>
+      <p class="hint">
+        Changes are saved automatically. Refresh any open tabs to apply them.
+      </p>
+
+      <section>
+        <h2>Sensitivity</h2>
+        <div class="radios">
+          <label>
+            <input type="radio" name="sensitivity" value="low" />
+            <span><b>Low</b> Fewer warnings, may miss borderline pages</span>
+          </label>
+          <label>
+            <input type="radio" name="sensitivity" value="medium" />
+            <span><b>Medium</b> Balanced (recommended)</span>
+          </label>
+          <label>
+            <input type="radio" name="sensitivity" value="high" />
+            <span><b>High</b> More warnings, more false alarms</span>
+          </label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Warning banner</h2>
+        <label class="check">
+          <input type="checkbox" id="show-banner" />
+          Show the red warning banner on dangerous pages
+        </label>
+        <p class="hint">The toolbar badge and popup always stay on.</p>
+      </section>
+
+      <section>
+        <h2>Trusted sites</h2>
+        <p class="hint">NSR never warns about these sites.</p>
+        <div class="row">
+          <input id="wl-input" type="text" placeholder="example.com" />
+          <button id="wl-add">Add</button>
+        </div>
+        <ul id="wl-list" class="items"></ul>
+      </section>
+
+      <section>
+        <h2>My brands</h2>
+        <p class="hint">
+          Add your own company, bank or service. NSR will flag
+          lookalikes of it. The keyword needs at least 5 characters
+          (typo detection works best with 6 or more).
+        </p>
+        <div class="row">
+          <input id="brand-name" type="text" placeholder="Keyword, e.g. acmecorp" />
+          <input
+            id="brand-domains"
+            type="text"
+            placeholder="Official domains, e.g. acmecorp.com, acme.in"
+          />
+          <button id="brand-add">Add</button>
+        </div>
+        <ul id="brand-list" class="items"></ul>
+      </section>
+    </main>
+
+    <div id="toast"></div>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
