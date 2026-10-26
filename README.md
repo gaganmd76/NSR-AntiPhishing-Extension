@@ -2,7 +2,7 @@
 
 **Real-time phishing detection in your browser.**
 
-NSR is a browser extension that analyzes web pages as they load and warns you before you fall for a phishing attempt. It checks the address, the page content and the redirect path, then gives each page a **risk score from 0 to 100**. Everything runs locally in your browser: no accounts, no servers, and no URLs or page data ever leave your device.
+NSR is a browser extension that analyzes web pages as they load and warns you before you fall for a phishing attempt. It checks the address, the page content, the redirect path and suspicious camera, microphone or location requests, then gives each page a **risk score from 0 to 100**. Everything runs locally in your browser: no accounts, no servers, and no URLs or page data ever leave your device.
 
 ![Chrome](https://img.shields.io/badge/Chrome-supported-green)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue)
@@ -45,6 +45,8 @@ NSR is a browser extension that analyzes web pages as they load and warns you be
 - **Warning banner** on dangerous pages, built in a Shadow DOM so the page cannot hide or tamper with it
 - **Glass-style popup** with the score, category breakdown, findings and redirect chain
 - **URL tester:** check any address without visiting it
+- **Camera, microphone and location watch:** flags pages that ask for these the moment they load, without any click
+- **Tunnel-host detection:** flags pages hosted on temporary tunnel services such as trycloudflare.com and ngrok
 - **Settings:** sensitivity (low, medium, high), banner on or off, trusted sites, custom brands
 - **Late-loading form detection:** pages that add a login form after loading are rescanned for 30 seconds
 - **100% local:** no tracking, no external requests
@@ -56,8 +58,9 @@ NSR is a browser extension that analyzes web pages as they load and warns you be
 | Category | Examples |
 |---|---|
 | **Lookalike domains** | `paypa1.com`, `paypall.com`, `paypal-secure-login.xyz`, `paypal.com.evil.net`, punycode (`xn--`) homographs |
-| **Suspicious URLs** | raw IP addresses, the `@` trick, too many subdomains, risky TLDs, very long URLs, phishing keywords, missing HTTPS |
+| **Suspicious URLs** | raw IP addresses, the `@` trick, too many subdomains, risky TLDs, very long URLs, phishing keywords, missing HTTPS, temporary tunnel hosting (`trycloudflare.com`, ngrok and similar) |
 | **Credential forms** | password forms posting to another domain, a raw IP or plain HTTP; logins handled only by JavaScript; many hidden fields |
+| **Camera, microphone and location grabs** | pages that request the camera, microphone or location automatically on load, with no click, a common trick on pages disguised as greetings, offers or games |
 | **Page content** | hidden iframes, pressure language ("your account will be suspended"), a title naming a brand that does not match the domain, obfuscated scripts |
 | **Redirects** | long chains, hops across many domains, URL shorteners, HTTPS to HTTP downgrades, redirects to raw IPs, open-redirect patterns |
 
@@ -82,6 +85,19 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 4. Click **Load unpacked** and select the folder that contains `manifest.json`.
 5. Click the puzzle-piece icon in the toolbar and **pin NSR**.
 
+### Firefox (experimental)
+
+1. Make sure Python 3 is installed, then from the project folder run:
+   ```bash
+   python build.py
+   ```
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on** and choose `dist/firefox/manifest.json`.
+4. Open `about:addons`, click NSR, then **Permissions**, and allow access to sites.
+
+Temporary Firefox add-ons are removed when Firefox restarts.
+
+> After installing or reloading the extension, **refresh any tabs that were already open**. Tabs opened earlier keep the old scripts.
 
 ---
 
@@ -98,8 +114,9 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
    - **Details** shows why the page was flagged
    - **I trust this site** adds it to your trusted list (use only if you are sure)
    - **×** hides the banner for this visit
-5. **Test a link safely:** type any address into the "Test any URL" box in the popup. Nothing is visited, it only analyzes the text.
-6. **Open Settings** (the ⚙️ button in the popup) to:
+5. **If a page asks for your camera, microphone or location on its own,** click **Block** in the browser's permission prompt. NSR flags the attempt but cannot block the prompt itself.
+6. **Test a link safely:** type any address into the "Test any URL" box in the popup. Nothing is visited, it only analyzes the text.
+7. **Open Settings** (the ⚙️ button in the popup) to:
    - change **sensitivity** (Low = fewer warnings, High = more warnings and more false alarms)
    - turn the **banner** on or off (the badge always stays)
    - manage **trusted sites**
@@ -110,9 +127,10 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 ## How it works
 
 1. The **background service worker** (`background.js`) records each tab's redirect chain and keeps its state in `chrome.storage.session`, because Manifest V3 workers can shut down at any time.
-2. The **content script** (`content.js`) scans the page's DOM for forms, iframes, text, titles and scripts, then sends its findings to the background worker.
-3. The **scoring engine** (`lib/scoring.js`) merges URL, page and redirect findings. It removes duplicates, caps each category, adds bonuses for dangerous combinations, and lowers the score for official brand domains.
-4. The score becomes a **verdict** based on your sensitivity setting, the badge is updated, and the banner is shown if the page is dangerous.
+2. A small **page-world script** (`inject.js`) runs at the start of every page load. It notices when the page calls the camera, microphone or location APIs and records whether the user had just clicked or pressed a key. It never touches the camera data itself.
+3. The **content script** (`content.js`) scans the page's DOM for forms, iframes, text, titles and scripts, reads the sensor-request notes from `inject.js`, then sends its findings to the background worker.
+4. The **scoring engine** (`lib/scoring.js`) merges URL, page and redirect findings. It removes duplicates, caps each category, adds bonuses for dangerous combinations, and lowers the score for official brand domains.
+5. The score becomes a **verdict** based on your sensitivity setting, the badge is updated, and the banner is shown if the page is dangerous.
 
 | Sensitivity | Suspicious from | Dangerous from |
 |---|---|---|
@@ -128,8 +146,8 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 |---|---|
 | Languages | JavaScript (ES modules), HTML, CSS, JSON |
 | Platform | Chrome Extension **Manifest V3** (service worker), Firefox Manifest V3 build |
-| Extension APIs | `tabs`, `webNavigation`, `webRequest`, `storage` (session and sync), `action`, `runtime` messaging, options page |
-| Web APIs | DOM, `URL`, `MutationObserver`, Shadow DOM, `getComputedStyle` |
+| Extension APIs | `tabs`, `webNavigation`, `webRequest`, `storage` (session and sync), `action`, `runtime` messaging, options page, content scripts in the `MAIN` world |
+| Web APIs | DOM, `URL`, `MutationObserver`, Shadow DOM, `getComputedStyle`, `getUserMedia`, Geolocation, `navigator.userActivation` |
 | Algorithms | Levenshtein edit distance, character-substitution normalization, weighted heuristic scoring |
 | Tooling | VS Code, Chrome DevTools, GitHub Copilot, Python (local test server and build script), Git |
 
@@ -144,6 +162,7 @@ manifest.json            Chrome and Chromium manifest (MV3, service worker)
 manifest.firefox.json    Firefox manifest (MV3, background scripts)
 background.js            Redirect tracking, scoring, toolbar badge
 content.js               Page scanner and warning banner
+inject.js                Page-world script that watches camera, microphone and location requests
 popup.html / .css / .js  Toolbar popup
 options.html / .css / .js  Settings page
 banner.css               Banner styles (loaded inside a Shadow DOM)
@@ -151,7 +170,7 @@ icons/                   Extension icons
 lib/
   brands.js              Commonly impersonated brands
   levenshtein.js         Edit distance for typo detection
-  urlAnalyzer.js         URL and domain heuristics
+  urlAnalyzer.js         URL, domain and tunnel-host heuristics
   redirectAnalyzer.js    Redirect chain heuristics
   scoring.js             Combines all signals into one score
   settings.js            Reads user settings from storage
@@ -170,12 +189,15 @@ NSR collects **no data** and makes **no network requests**. All analysis happens
 | `webNavigation`, `webRequest` | Observe redirects to build the redirect chain (NSR only observes, it never blocks or changes requests) |
 | `storage` | Save your settings and the per-tab redirect results |
 | Access to `http://*/*` and `https://*/*` | Scan the forms and content of the pages you visit, which is the core feature |
+| Script running inside pages (`inject.js`) | Notice when a page requests the camera, microphone or location. It records only that a request happened and whether you clicked first, never any camera, microphone or location data |
 
 ---
 
 ## Testing safely
 
 **Never test against real phishing sites.** Use local test pages served from your own computer (for example a fake login page and a redirect chain served with `python redirect_server.py`). The fake forms point to reserved documentation addresses, so nothing real is contacted. Never type real passwords into any test page.
+
+For the camera check, use a harmless local page that only asks for permission and never records or sends anything. Click **Block** when the browser asks.
 
 ---
 
@@ -185,7 +207,8 @@ NSR collects **no data** and makes **no network requests**. All analysis happens
 - **Explainable:** every warning lists the exact reasons and points behind it
 - **Real-time:** checks happen as pages load, before you type anything
 - **Catches new sites:** heuristics do not need a database of known bad URLs
-- **Multi-signal:** URL, forms, page content and redirects are combined, which reduces false alarms
+- **Beyond passwords:** also notices pages that try to grab your camera, microphone or location
+- **Multi-signal:** URL, forms, page content, sensor requests and redirects are combined, which reduces false alarms
 - **Customizable:** sensitivity, trusted sites and your own brands
 - **Tamper-resistant banner:** Shadow DOM stops page CSS and scripts from hiding it
 - **Lightweight:** plain JavaScript, no dependencies, no account needed
@@ -196,7 +219,10 @@ NSR collects **no data** and makes **no network requests**. All analysis happens
 ## Disadvantages and limitations
 
 - **Heuristics only:** there is no threat-intelligence feed (such as Google Safe Browsing or PhishTank), so a new attack that avoids these patterns can be missed
+- **Detects, but cannot block, permission prompts:** NSR flags an automatic camera, microphone or location request, but the browser's own prompt still appears and you must click **Block**
 - **False positives:** legitimate sign-in or payment flows that post to other domains may score as suspicious (use "I trust this site")
+- **Developers using tunnels:** pages hosted on ngrok, trycloudflare.com and similar services are flagged by design, so developers should trust their own tunnel addresses
+- **Focused coverage:** detection centers on credential theft and automatic camera, microphone and location requests, so other kinds of attack may be missed
 - **Small built-in brand list:** you can add your own brands in Settings, but coverage is limited
 - **Limited homograph detection:** covers punycode domains, not every Unicode lookalike trick
 - **No visual checks:** it does not compare logos or page appearance
@@ -241,4 +267,11 @@ NSR is an educational project and a heuristic tool. It can miss real phishing si
 
 ## Roadmap
 
-- [ ] Opt-in Safe Browsing or
+- [x] Camera, microphone and location request detection
+- [x] Temporary tunnel-host detection
+- [ ] Opt-in Safe Browsing or PhishTank lookups
+- [ ] Larger brand list loaded from a bundled JSON file
+- [ ] Logo and visual similarity checks
+- [ ] Unit tests for the analyzers
+- [ ] More thorough Firefox testing
+- [ ] Chrome Web Store release
