@@ -71,7 +71,7 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 
 1. Download the code:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/nsr.git
+   git clone (https://github.com/gaganmd76/NSR-AntiPhishing-Extension.git)
    ```
    Or click **Code, then Download ZIP** on GitHub and unzip it.
 2. Open the extensions page:
@@ -82,19 +82,6 @@ NSR is not on a browser store yet, so you load it manually (about one minute).
 4. Click **Load unpacked** and select the folder that contains `manifest.json`.
 5. Click the puzzle-piece icon in the toolbar and **pin NSR**.
 
-### Firefox (experimental)
-
-1. Make sure Python 3 is installed, then from the project folder run:
-   ```bash
-   python build.py
-   ```
-2. Open `about:debugging#/runtime/this-firefox`.
-3. Click **Load Temporary Add-on** and choose `dist/firefox/manifest.json`.
-4. Open `about:addons`, click NSR, then **Permissions**, and allow access to sites.
-
-Temporary Firefox add-ons are removed when Firefox restarts.
-
-> After installing or reloading the extension, **refresh any tabs that were already open**. Tabs opened earlier keep the old scripts.
 
 ---
 
